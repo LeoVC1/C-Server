@@ -12,6 +12,7 @@ namespace Servidor
     class Program
     {
         public static Socket connection;
+        public static TcpClient client;
         public static BinaryWriter binaryWriter;
         public static BinaryReader binaryReader;
         public static NetworkStream networkStream;
@@ -28,12 +29,14 @@ namespace Servidor
 
             try
             {
+                ConsoleColor serverColor = (ConsoleColor)10;
+                Console.ForegroundColor = serverColor;
+
                 tcpListener = new TcpListener(7777);
                 tcpListener.Start();
 
                 while (true)
                 {
-                    //Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("[SERVIDOR]: Aguardando conexão...");
                     connection = tcpListener.AcceptSocket();
                     Console.WriteLine("[SERVIDOR]: Conexão estabelecida. Remote end point: " + connection.RemoteEndPoint); ;
@@ -43,32 +46,32 @@ namespace Servidor
 
                     Random rnd = new Random(DateTime.Now.Millisecond);
 
-                    //ConsoleColor connectionColor = (ConsoleColor) rnd.Next(0, 10);
-                    string ValorVerificar;
-                    bool IsNumber;
-                    int AddNumbers;
+                    int count = 0;
                     string msg;
-
-                    //Console.ForegroundColor = connectionColor;
+                    List<int> numbers = new List<int>();
 
                     do
                     {
                         msg = binaryReader.ReadString();
-                        Console.WriteLine(msg);
-                        ValorVerificar = msg;
-                        IsNumber=int.TryParse(ValorVerificar,out AddNumbers);
-                        if(IsNumber){
-                            int NumberTemporary;
-                            NumberTemporary = Convert.ToInt32(ValorVerificar);
-                            AddNumbers+=NumberTemporary;
+
+                        if(int.TryParse(msg, out int number))
+                        {
+                            count += number;
+                            numbers.Add(number);
                         }
-                        else{
-                        
+
+                        if (msg.ToLower() == "mostrar")
+                        {
+                            Console.Write("Os numeros digitados foram: ", Console.ForegroundColor);
+
+                            foreach(int n in numbers)
+                            {
+                                Console.Write(n.ToString() + ", ", Console.ForegroundColor);
+                            }
+
+                            Console.WriteLine($"\nA somatória foi {count}.", Console.ForegroundColor);
                         }
-                        if(msg.ToLower() == "mostrar"){
-                        Console.WriteLine($"A somatória foi {AddNumbers}");
-                        }
-                        //Console.WriteLine(msg, Console.ForegroundColor);
+
                     } while (msg.ToLower() != "fim");
 
                     binaryWriter.Close();
