@@ -23,8 +23,8 @@ namespace Client
 
         static void Main(string[] args)
         {
-            IntPtr hWnd = GetConsoleWindow();
-            ShowWindow(hWnd, 0);
+            //IntPtr hWnd = GetConsoleWindow();
+            //ShowWindow(hWnd, 0);
             Thread thread = new Thread(new ThreadStart(RunClient));
             thread.Start();
         }

@@ -33,7 +33,7 @@ namespace Servidor
 
                 while (true)
                 {
-                    Console.ForegroundColor = ConsoleColor.White;
+                    //Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("[SERVIDOR]: Aguardando conexão...");
                     connection = tcpListener.AcceptSocket();
                     Console.WriteLine("[SERVIDOR]: Conexão estabelecida. Remote end point: " + connection.RemoteEndPoint); ;
@@ -43,16 +43,32 @@ namespace Servidor
 
                     Random rnd = new Random(DateTime.Now.Millisecond);
 
-                    ConsoleColor connectionColor = (ConsoleColor) rnd.Next(0, 10);
-
+                    //ConsoleColor connectionColor = (ConsoleColor) rnd.Next(0, 10);
+                    string ValorVerificar;
+                    bool IsNumber;
+                    int AddNumbers;
                     string msg;
 
-                    Console.ForegroundColor = connectionColor;
+                    //Console.ForegroundColor = connectionColor;
 
                     do
                     {
                         msg = binaryReader.ReadString();
-                        Console.WriteLine(msg, Console.ForegroundColor);
+                        Console.WriteLine(msg);
+                        ValorVerificar = msg;
+                        IsNumber=int.TryParse(ValorVerificar,out AddNumbers);
+                        if(IsNumber){
+                            int NumberTemporary;
+                            NumberTemporary = Convert.ToInt32(ValorVerificar);
+                            AddNumbers+=NumberTemporary;
+                        }
+                        else{
+                        
+                        }
+                        if(msg.ToLower() == "mostrar"){
+                        Console.WriteLine($"A somatória foi {AddNumbers}");
+                        }
+                        //Console.WriteLine(msg, Console.ForegroundColor);
                     } while (msg.ToLower() != "fim");
 
                     binaryWriter.Close();
